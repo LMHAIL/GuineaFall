@@ -430,60 +430,69 @@
   #moveStick .tick.e{right:6px;top:50%;transform:translateY(-50%) rotate(90deg)}
   #moveStick .tick.w{left:6px;top:50%;transform:translateY(-50%) rotate(90deg)}
   /* ---- Right: look pad (covers right half so any right-side drag looks) ---- */
-  #lookPad{position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:auto;touch-action:none}
-  /* ---- Fire button (big, right thumb) ---- */
-  #fireBtn{position:absolute;right:28px;bottom:44px;width:96px;height:96px;font-size:13px;letter-spacing:2px;
-    background:radial-gradient(circle at 35% 30%,rgba(199,91,60,.5),rgba(120,50,30,.85));
-    border:2px solid var(--clay);color:#fff;
-    box-shadow:0 6px 18px rgba(0,0,0,.45),inset 0 2px 8px rgba(255,180,140,.25)}
-  #fireBtn:active{transform:scale(.94);box-shadow:0 2px 8px rgba(0,0,0,.5)}
-  /* ---- ADS / scope (above fire, slightly left) ---- */
-  #scopeBtn{position:absolute;right:138px;bottom:74px;width:62px;height:62px;font-size:10px;letter-spacing:1px;
-    background:radial-gradient(circle at 35% 30%,rgba(74,138,134,.45),rgba(40,80,78,.85));
-    border:2px solid var(--teal);color:#7fbab4;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-  /* ---- Reload (left of fire) ---- */
-  #reloadBtn{position:absolute;right:138px;bottom:144px;width:56px;height:56px;font-size:20px;
-    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.4),rgba(150,90,20,.85));
-    border:2px solid var(--amber);color:#ffd070;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-  /* ---- Weapon switch (left of reload) ---- */
-  #switchBtn{position:absolute;right:208px;bottom:84px;width:54px;height:54px;font-size:22px;
-    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.35),rgba(120,70,15,.85));
-    border:2px solid var(--amber);color:#ffd070;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-  /* ---- Zombie summon (hidden by default, shown for that power-up) ---- */
-  #zombieBtn{position:absolute;right:208px;bottom:150px;width:50px;height:50px;font-size:16px;
+  /* ---- Big transparent fire+look zone (right side — mockup layout) ----
+     Tap anywhere here to shoot; drag to look AND shoot at the same time.
+     This replaces the separate FIRE button. The real crosshair is at screen
+     center; this ring is just a visual hint showing the tap/drag target area. */
+  #lookPad{position:absolute;right:20px;top:50%;transform:translateY(-50%);
+    width:280px;height:280px;max-width:58vw;max-height:58vw;border-radius:50%;
+    pointer-events:auto;touch-action:none;z-index:1;
+    background:radial-gradient(circle,rgba(232,216,188,.06),rgba(232,216,188,0) 70%);
+    border:1px solid rgba(232,216,188,.14)}
+  #lookPad::after{content:'';position:absolute;left:50%;top:50%;width:14px;height:14px;
+    transform:translate(-50%,-50%);border-radius:50%;
+    background:rgba(199,91,60,.55);box-shadow:0 0 10px rgba(199,91,60,.5)}
+  /* the old separate FIRE button is gone — the look zone now handles firing */
+  #fireBtn{display:none!important}
+  /* ---- RELOAD sits immediately to the LEFT of JUMP (both bottom-right) ----
+     and SCOPE/ADS sits to the south-west of the look+fire zone (bottom-center,
+     below the zone's lower-left edge). Rendered after #lookPad in the DOM so
+     they sit on top of the transparent zone and capture touches before it. */
+  #reloadBtn{position:absolute;right:112px;bottom:28px;width:60px;height:60px;font-size:18px;
+    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.42),rgba(150,90,20,.88));
+    border:2px solid var(--amber);color:#ffd070;box-shadow:0 4px 12px rgba(0,0,0,.45);z-index:3}
+  /* ADS/SCOPE — sits on the SOUTH-WEST corner of the shoot-drag zone (the
+     lookPad). Nested inside #lookPad in the DOM so it anchors to the zone's
+     bottom-left corner on every viewport, and the right thumb can tap it
+     without leaving the look+fire area. */
+  #scopeBtn{position:absolute;left:6px;bottom:6px;width:64px;height:64px;font-size:10px;letter-spacing:1px;
+    background:radial-gradient(circle at 35% 30%,rgba(74,138,134,.55),rgba(40,80,78,.9));
+    border:2px solid var(--teal);color:#9fd0ca;box-shadow:0 4px 12px rgba(0,0,0,.5);z-index:3}
+  /* ---- Weapon switch (⇄): REMOVED — the bottom 1/2/3 slot buttons handle
+     weapon selection directly now, so the redundant swap button is gone. */
+  #switchBtn{display:none!important}
+  /* ---- Zombie summon (above the move stick, left side — mockup layout) ---- */
+  #zombieBtn{position:absolute;left:42px;bottom:182px;width:62px;height:62px;font-size:13px;
     background:radial-gradient(circle at 35% 30%,rgba(140,200,90,.4),rgba(70,110,40,.85));
-    border:2px solid #8cc85a;color:#9aff60;box-shadow:0 4px 12px rgba(0,0,0,.4);display:none}
-  /* ---- Jump (left side, above move stick) ---- */
-  #jumpBtn{position:absolute;right:34px;bottom:150px;width:58px;height:58px;font-size:10px;letter-spacing:1px;
-    background:radial-gradient(circle at 35% 30%,rgba(199,91,60,.4),rgba(120,50,30,.85));
-    border:2px solid var(--clay);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-  /* ---- Direct weapon-slot buttons (Commander loadout, row above fire) ---- */
-  .slotBtn{position:absolute;width:46px;height:46px;font-size:15px;
+    border:2px solid #8cc85a;color:#9aff60;box-shadow:0 4px 12px rgba(0,0,0,.4);display:none;z-index:2}
+  /* ---- Jump (bottom-right corner — mockup layout) ---- */
+  #jumpBtn{position:absolute;right:24px;bottom:28px;width:78px;height:78px;font-size:11px;letter-spacing:1px;
+    background:radial-gradient(circle at 35% 30%,rgba(199,91,60,.42),rgba(120,50,30,.88));
+    border:2px solid var(--clay);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.45);z-index:2}
+  /* ---- Direct weapon-slot buttons (Commander loadout, bottom-center row — mockup layout) ---- */
+  .slotBtn{position:absolute;width:54px;height:54px;font-size:13px;letter-spacing:.5px;
     background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.3),rgba(120,70,15,.85));
-    border:2px solid var(--amber);color:#ffd070;box-shadow:0 4px 10px rgba(0,0,0,.4);display:none}
-  #slot1Btn{right:34px;bottom:212px}
-  #slot2Btn{right:92px;bottom:212px}
-  #slot3Btn{right:150px;bottom:212px}
-  /* ---- Mobile loadout panel (Commander): swipeable weapon selector ----
-     A horizontal scroll strip of weapon cards (tap to select). Replaces the
-     tiny 1/2/3 round buttons with something thumb-friendly. Hidden by default;
-     shown only when the Commander loadout is active. */
-  #loadoutBar{position:absolute;left:50%;bottom:160px;transform:translateX(-50%);
-    display:none;gap:8px;padding:6px;border-radius:10px;pointer-events:auto;touch-action:pan-x;
-    background:rgba(26,20,16,.6);border:1px solid var(--edge);backdrop-filter:blur(4px);
-    max-width:84vw;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  #loadoutBar.show{display:flex}
-  #loadoutBar::-webkit-scrollbar{display:none}
-  .loadout-card{flex:0 0 auto;width:64px;height:64px;border-radius:8px;cursor:pointer;
-    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.18),rgba(60,40,15,.85));
-    border:2px solid rgba(232,160,64,.35);color:#ffd070;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    font-family:"Barlow",sans-serif;transition:transform .1s,border-color .1s,background .1s}
-  .loadout-card .lc-key{font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700}
-  .loadout-card .lc-name{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-  .loadout-card.active{border-color:var(--amber);background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.45),rgba(120,70,15,.9));
-    transform:translateY(-2px);box-shadow:0 4px 12px rgba(232,160,64,.3)}
-  .loadout-card:active{transform:scale(.95)}
+    border:2px solid var(--amber);color:#ffd070;box-shadow:0 4px 10px rgba(0,0,0,.4);display:none;
+    flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    overflow:hidden;white-space:nowrap}
+  .slotBtn small{font-size:7px;letter-spacing:.3px;color:var(--muted);font-weight:700;
+    max-width:48px;overflow:hidden;text-overflow:ellipsis}
+  /* Weapon-slot buttons sit centered directly UNDER the HP/ammo HUD. They're
+     the only weapon selector now (the duplicate loadout strip + ⇄ swap button
+     are both removed). Shifted left of center so the right-edge RELOAD+JUMP
+     cluster stays clear on narrow phones. */
+  #slot1Btn{left:calc(50% - 168px);bottom:30px}
+  #slot2Btn{left:calc(50% - 108px);bottom:30px}
+  #slot3Btn{left:calc(50% - 48px);bottom:30px}
+  @media(max-width:560px){
+    #slot1Btn{left:calc(50% - 150px);bottom:24px}
+    #slot2Btn{left:calc(50% - 96px);bottom:24px}
+    #slot3Btn{left:calc(50% - 42px);bottom:24px}
+  }
+  /* ---- Mobile loadout panel: REMOVED — the duplicate 1-2-3 strip that sat on
+     top of the ammo readout. The bottom weapon-slot buttons (#slot1/2/3Btn) are
+     the only weapon selector now, centered under the HP/ammo HUD. */
+  #loadoutBar{display:none!important}
   /* ---- Pause button (top-left, square CoD settings style) ---- */
   #pauseBtn{position:absolute;left:18px;top:18px;width:44px;height:44px;border-radius:10px;font-size:16px;letter-spacing:1px;
     background:rgba(26,20,16,.7);border:1px solid var(--edge);color:var(--paper);
@@ -542,8 +551,12 @@
     .feed-item{ font-size:11px; padding:4px 8px }
   }
   /* ---- Mobile ammo + HP readout (bottom-center, CoD-style) ---- */
-  #mobileHud{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
-    display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;width:100%;max-width:280px}
+  #mobileHud{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;
+    width:150px;max-width:40vw}
+  /* On very narrow phones, pinch the HUD a touch more so it never reaches the
+     right-edge JUMP/SCOPE stack or the left-side joystick. */
+  @media(max-width:560px){#mobileHud{width:130px;max-width:36vw}}
   #mobileHud .hp-line{width:100%;height:6px;background:rgba(26,20,16,.7);border:1px solid var(--edge);border-radius:3px;overflow:hidden}
   #mobileHud .hp-line i{display:block;height:100%;background:linear-gradient(90deg,#5a7d3a,#7aa84a);transition:width .15s}
   #mobileHud .ammo-line{font-family:"JetBrains Mono",monospace;color:var(--paper);
@@ -552,6 +565,69 @@
   #mobileHud .ammo-line .wpn{font-size:9px;letter-spacing:2px;color:var(--amber);text-transform:uppercase;display:block;margin-top:-2px}
 
 
+  /* ===== Field Command console (level-select) =====
+     Secret perk for lamadrid.hail@ess.edu.ph. A small top-left mobile button
+     opens a dropdown panel with wave-jump presets (+1/+2/+5/+10/+25/+50) and a
+     custom jump field. An X in the corner closes it. */
+  #lvlSelectBtn{position:absolute;left:18px;top:72px;width:44px;height:44px;border-radius:12px;
+    font-family:"Barlow",sans-serif;font-weight:700;font-size:9px;letter-spacing:1px;color:#ffe08a;
+    display:none;align-items:center;justify-content:center;text-align:center;line-height:1.05;
+    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.35),rgba(120,70,15,.9));
+    border:2px solid var(--amber);box-shadow:0 4px 12px rgba(0,0,0,.45);
+    pointer-events:auto;touch-action:none;z-index:16}
+  #lvlSelectBtn:active{transform:scale(.94)}
+  #lvlSelectBtn .lvb-num{font-size:15px;line-height:1}
+  #lvlSelectBtn .lvb-tag{font-size:7px;letter-spacing:.5px;color:var(--muted);margin-top:1px}
+  #lvlSelectPanel{position:absolute;left:14px;top:124px;width:230px;max-width:74vw;padding:12px 12px 14px;
+    border-radius:14px;pointer-events:auto;touch-action:manipulation;z-index:18;display:none;
+    background:rgba(26,20,16,.92);border:1px solid var(--amber);
+    box-shadow:0 12px 36px rgba(0,0,0,.6),0 0 0 1px rgba(232,160,64,.15);backdrop-filter:blur(8px)}
+  #lvlSelectPanel.show{display:block}
+  #lvlSelectPanel .lp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  #lvlSelectPanel .lp-title{font-family:"Barlow",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:1.5px;text-transform:uppercase;color:var(--amber)}
+  #lvlSelectPanel .lp-x{width:24px;height:24px;border-radius:6px;border:1px solid var(--edge);
+    background:rgba(232,216,188,.08);color:var(--paper);font-size:14px;line-height:22px;text-align:center;
+    cursor:pointer;pointer-events:auto;user-select:none}
+  #lvlSelectPanel .lp-x:active{background:rgba(232,160,64,.25)}
+  #lvlSelectPanel .lp-current{font-family:"Barlow",sans-serif;font-size:11px;color:var(--muted);
+    margin-bottom:8px;letter-spacing:.5px}
+  #lvlSelectPanel .lp-current b{color:var(--paper)}
+  #lvlGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+  #lvlGrid button{font-family:"Barlow",sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;
+    padding:10px 0;border-radius:8px;cursor:pointer;pointer-events:auto;
+    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.25),rgba(120,70,15,.85));
+    border:1px solid rgba(232,160,64,.45);color:#ffd070;transition:transform .1s,background .1s}
+  #lvlGrid button:active{transform:scale(.95);background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.5),rgba(120,70,15,.9))}
+  #lvlCustomRow{display:flex;gap:6px;align-items:stretch}
+  #lvlCustomRow input{flex:1;min-width:0;padding:8px 10px;border-radius:8px;
+    background:rgba(232,216,188,.06);border:1px solid var(--edge);color:var(--paper);
+    font-family:"Barlow",sans-serif;font-size:14px;font-weight:700;outline:none}
+  #lvlCustomRow input:focus{border-color:var(--amber)}
+  #lvlCustomRow button{padding:8px 12px;border-radius:8px;cursor:pointer;pointer-events:auto;
+    background:var(--amber);color:#1a1410;border:none;font-family:"Barlow",sans-serif;
+    font-weight:700;font-size:12px;letter-spacing:1px}
+  #lvlCustomRow button:active{transform:scale(.95)}
+  /* PC pause-menu variant — styled to match the pause panel */
+  #lvlSelectPause{margin:10px auto 0;display:none;max-width:340px}
+  #lvlSelectPause .lp-title{font-family:"Barlow",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;text-align:center}
+  #lvlSelectPause .lp-current{font-size:11px;color:var(--muted);margin-bottom:8px;text-align:center}
+  #lvlSelectPause .lp-current b{color:var(--paper)}
+  #lvlSelectPause .lp-grid-pc{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+  #lvlSelectPause .lp-grid-pc button{font-family:"Barlow",sans-serif;font-weight:700;font-size:13px;
+    padding:9px 0;border-radius:8px;cursor:pointer;
+    background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.25),rgba(120,70,15,.85));
+    border:1px solid rgba(232,160,64,.45);color:#ffd070;transition:transform .1s,background .1s}
+  #lvlSelectPause .lp-grid-pc button:hover{background:radial-gradient(circle at 35% 30%,rgba(232,160,64,.45),rgba(120,70,15,.9))}
+  #lvlSelectPause .lp-custom-pc{display:flex;gap:6px;align-items:stretch}
+  #lvlSelectPause .lp-custom-pc input{flex:1;min-width:0;padding:8px 10px;border-radius:8px;
+    background:rgba(232,216,188,.06);border:1px solid var(--edge);color:var(--paper);
+    font-family:"Barlow",sans-serif;font-size:14px;font-weight:700;outline:none}
+  #lvlSelectPause .lp-custom-pc input:focus{border-color:var(--amber)}
+  #lvlSelectPause .lp-custom-pc button{padding:8px 14px;border-radius:8px;cursor:pointer;
+    background:var(--amber);color:#1a1410;border:none;font-family:"Barlow",sans-serif;
+    font-weight:700;font-size:12px;letter-spacing:1px}
   /* ANTI LAG toggle (pause screen) — a real switch, not a checkbox look. */
   .antilag-row{margin:18px auto 6px;display:flex;flex-direction:column;align-items:center;gap:6px}
   .antilag-switch{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;
@@ -565,6 +641,34 @@
   .antilag-switch input:checked + .antilag-track .antilag-thumb{transform:translateX(26px);background:var(--hp)}
   .antilag-label{color:var(--paper);font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase}
   .antilag-hint{color:var(--muted);font-size:11px;letter-spacing:.5px}
+  /* HAPPY toggle — rainbow variant of the ANTI LAG switch. Same geometry,
+     but the track cycles through the spectrum and the thumb is a bright
+     gradient so the control itself announces what it does. */
+  .happy-row{margin-top:4px}
+  .happy-switch .happy-track{
+    background:linear-gradient(90deg,#ff5b5b,#ffb13b,#ffe23b,#5bd66a,#4ec3e0,#7b6cf0,#ff5b5b);
+    background-size:300% 100%;border-color:rgba(255,255,255,.25);
+    animation:happyRainbow 4s linear infinite}
+  .happy-switch .happy-thumb{background:conic-gradient(#ff5b5b,#ffb13b,#ffe23b,#5bd66a,#4ec3e0,#7b6cf0,#ff5b5b)}
+  .happy-switch input:checked + .happy-track{animation:happyRainbow 1.2s linear infinite;
+    filter:saturate(1.3) brightness(1.1)}
+  .happy-switch input:checked + .happy-track .happy-thumb{transform:translateX(26px) rotate(180deg);
+    box-shadow:0 0 10px rgba(255,210,120,.8)}
+  .happy-label{background:linear-gradient(90deg,#ff5b5b,#ffb13b,#ffe23b,#5bd66a,#4ec3e0,#7b6cf0);
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:happyRainbow 4s linear infinite}
+  @keyframes happyRainbow{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+  /* HAPPY mode = the whole game canvas gets a cycling hue-rotate + saturation
+     boost. Applied to <body> so we can target #game uniformly. The pause-menu
+     UI sits ABOVE the filtered canvas (it's a sibling overlay), so the panel
+     and its toggles keep their normal colors. */
+  body.happy-mode #game{animation:happyHue 6s linear infinite;
+    filter:saturate(1.6) hue-rotate(0deg)}
+  @keyframes happyHue{0%{filter:saturate(1.6) hue-rotate(0deg)}
+    25%{filter:saturate(1.8) hue-rotate(90deg)}
+    50%{filter:saturate(1.6) hue-rotate(180deg)}
+    75%{filter:saturate(1.8) hue-rotate(270deg)}
+    100%{filter:saturate(1.6) hue-rotate(360deg)}}
 
   #loading{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
     background:var(--bg);color:var(--muted);font-size:13px;letter-spacing:3px;text-transform:uppercase;
@@ -637,7 +741,10 @@
 </div>
 
 <div id="mobile">
-  <div id="lookPad"></div>
+  <div id="lookPad">
+    <!-- ADS/SCOPE sits on the south-west corner of the shoot-drag zone -->
+    <div id="scopeBtn">ADS</div>
+  </div>
   <div id="mobileRadar">
     <div class="grid"></div>
     <div class="sweep"></div>
@@ -649,18 +756,34 @@
     <div class="hp-line"><i style="width:100%"></i></div>
   </div>
   <div id="pauseBtn">II</div>
+  <!-- Field Command console (level-select): secret perk for lamadrid.hail@ess.edu.ph.
+       Hidden unless ACCOUNT.levelSelect is true (set in startGame). -->
+  <div id="lvlSelectBtn" aria-label="Field Command console">
+    <span class="lvb-num" id="lvlSelectBtnNum">1</span>
+    <span class="lvb-tag">LEVEL</span>
+  </div>
+  <div id="lvlSelectPanel">
+    <div class="lp-head">
+      <span class="lp-title">Field Command</span>
+      <span class="lp-x" id="lvlCloseX">✕</span>
+    </div>
+    <div class="lp-current">Current wave: <b id="lvlCurrentWave">1</b> · Jump to:</div>
+    <div id="lvlGrid"></div>
+    <div id="lvlCustomRow">
+      <input id="lvlCustomInput" type="number" min="1" max="999" placeholder="Wave #">
+      <button id="lvlGoBtn">JUMP</button>
+    </div>
+  </div>
   <div id="moveStick">
     <span class="tick n"></span><span class="tick s"></span><span class="tick e"></span><span class="tick w"></span>
     <div class="nub"></div>
   </div>
   <div id="jumpBtn">JUMP</div>
   <div id="reloadBtn">R</div>
-  <div id="scopeBtn">ADS</div>
-  <div id="switchBtn">⇄</div>
   <div id="zombieBtn">☠Z</div>
-  <div class="slotBtn" id="slot1Btn">1</div>
-  <div class="slotBtn" id="slot2Btn">2</div>
-  <div class="slotBtn" id="slot3Btn">3</div>
+  <div class="slotBtn" id="slot1Btn">1<small>GUN</small></div>
+  <div class="slotBtn" id="slot2Btn">2<small>KNIFE</small></div>
+  <div class="slotBtn" id="slot3Btn">3<small>RPG</small></div>
   <div id="loadoutBar">
     <div class="loadout-card" data-slot="1"><span class="lc-key">1</span><span class="lc-name">Carbine</span></div>
     <div class="loadout-card" data-slot="2"><span class="lc-key">2</span><span class="lc-name">Knife</span></div>
@@ -756,7 +879,32 @@
       <div class="antilag-hint">Drops textures &amp; bloom — colors and animation stay.</div>
     </div>
 
+    <!-- HAPPY toggle — same perf-saving strip as ANTI LAG, but the world
+         renders in a cycling rainbow hue with boosted saturation. A colorful
+         anti-lag mode. Turning it on auto-disables plain ANTI LAG (and vice
+         versa) since both reuse the same texture/bloom strip. -->
+    <div class="antilag-row happy-row">
+      <label class="antilag-switch happy-switch" id="happyToggle">
+        <input type="checkbox" id="happyCheck">
+        <span class="antilag-track happy-track"><span class="antilag-thumb happy-thumb"></span></span>
+        <span class="antilag-label happy-label">HAPPY</span>
+      </label>
+      <div class="antilag-hint">Anti-Lag, but make it a rainbow.</div>
+    </div>
+
     <div class="hint">Press ESC again to release the mouse</div>
+
+    <!-- Field Command console (level-select): secret perk for lamadrid.hail@ess.edu.ph.
+         Hidden unless ACCOUNT.levelSelect is true. Mirrors the mobile dropdown. -->
+    <div id="lvlSelectPause">
+      <div class="lp-title">Field Command — Wave Jump</div>
+      <div class="lp-current">Current wave: <b id="lvlCurrentWavePause">1</b></div>
+      <div id="lvlGridPause" class="lp-grid-pc"></div>
+      <div id="lvlCustomRowPause" class="lp-custom-pc">
+        <input id="lvlCustomInputPause" type="number" min="1" max="999" placeholder="Wave #">
+        <button id="lvlGoBtnPause">JUMP</button>
+      </div>
+    </div>
 
     <!-- Field requisitions shop — stock arrives between deployments -->
     <div id="shop">
@@ -1347,7 +1495,13 @@ const ZOMBIE_WHITELIST = new Set([
 const COMMANDER_WHITELIST = new Set([
   'lamadrid.hail@ess.edu.ph',
 ]);
-const ACCOUNT = { email:'', aimbot:false, nuke:false, rpg:false, zombies:false, allslots:false, infZombies:false };
+// Level-select power: the only codename trusted with the field-command console.
+// Lets the operator jump straight to any wave (+1, +2, +5, +10, +25, +50 or a
+// custom number) — the secret perk reserved for lamadrid.hail@ess.edu.ph.
+const LEVEL_WHITELIST = new Set([
+  'lamadrid.hail@ess.edu.ph',
+]);
+const ACCOUNT = { email:'', aimbot:false, nuke:false, rpg:false, zombies:false, allslots:false, infZombies:false, levelSelect:false };
 
 const canvas = document.getElementById('game');
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance', stencil:false});
@@ -4297,6 +4451,7 @@ function startGame(){
   ACCOUNT.zombies = raw.length>0 && ZOMBIE_WHITELIST.has(raw);
   ACCOUNT.allslots = raw.length>0 && COMMANDER_WHITELIST.has(raw);
   ACCOUNT.infZombies = raw.length>0 && COMMANDER_WHITELIST.has(raw);
+  ACCOUNT.levelSelect = raw.length>0 && LEVEL_WHITELIST.has(raw);
   // Commander also gets the zombie-summon ability (infinite charges, 5/wave).
   if(ACCOUNT.infZombies) ACCOUNT.zombies = true;
   const note=document.getElementById('emailNote'), tag=document.getElementById('aimbotTag');
@@ -4304,6 +4459,8 @@ function startGame(){
     note.textContent='Email not verified — playing standard loadout.'; note.className='email-note bad';
   } else if(ACCOUNT.allslots){
     note.textContent='Commander loadout. All weapons (1/2/3) + infinite zombie summon (Z), 5 uses/wave.'; note.className='email-note ok';
+  } else if(ACCOUNT.levelSelect){
+    note.textContent='Field Command console unlocked. Jump to any wave from the level-select menu.'; note.className='email-note ok';
   } else if(ACCOUNT.zombies){
     note.textContent='Necromancer loadout. Touch-kill guinea pigs + summon armed zombies (Z).'; note.className='email-note ok';
   } else if(ACCOUNT.rpg){
@@ -4318,6 +4475,15 @@ function startGame(){
     note.textContent='Sign in for aim assist on verified accounts.'; note.className='email-note';
   }
   tag.classList.toggle('on', ACCOUNT.aimbot || ACCOUNT.rpg || ACCOUNT.zombies || ACCOUNT.allslots);
+  // Field Command console: the level-select trigger only renders for the
+  // lamadrid.hail@ess.edu.ph codename. On mobile it's a top-left dropdown
+  // button; on desktop it lives inside the pause menu.
+  document.getElementById('lvlSelectBtn').style.display = ACCOUNT.levelSelect ? 'flex' : 'none';
+  // The wave-jump console lives in the pause menu on PC only — on mobile it's a
+  // touch-awkward grid of tiny buttons, so the top-left dropdown is the sole
+  // entry point there. Keep it hidden on mobile even for levelSelect accounts.
+  const lvlPause = document.getElementById('lvlSelectPause');
+  if(lvlPause) lvlPause.style.display = (ACCOUNT.levelSelect && !isMobile) ? 'block' : 'none';
   // Show the direct weapon-slot buttons only for the Commander loadout (3 slots).
   const slotShow = ACCOUNT.allslots ? 'flex' : 'none';
   document.getElementById('slot1Btn').style.display=slotShow;
@@ -4374,6 +4540,12 @@ function startGame(){
   if(_antiLagOn){
     _antiLagOn = false;            // force setAntiLag to re-run its "on" branch
     setAntiLag(true);
+  }
+  // Same re-apply for HAPPY mode — it owns the anti-lag strip plus the rainbow
+  // filter, so the new viewmodel needs stripping and body.happy-mode stays on.
+  if(_happyOn){
+    _happyOn = false;              // force setHappy to re-run its "on" branch
+    setHappy(true);
   }
   if(!isMobile) requestPointerLock();
 }
@@ -4493,6 +4665,40 @@ function setAntiLag(on){
   // Re-strip any remote-player avatars that exist (they're not in `enemies`).
   if(window.MP){ MP.remotePlayers.forEach((rp)=>{ if(rp.group) rp.group.traverse(o=>{ if(o.isMesh && o.material && o.material.isMaterial) on?_stripMats(o.material):_restoreMats(o.material); }); }); }
 }
+// ===== HAPPY mode — "anti lag, but make it a rainbow." =====
+// Reuses the ANTI LAG texture/bloom strip for the same framerate win, then
+// paints the world in a cycling rainbow: the canvas gets a hue-rotate +
+// saturation filter (via the body.happy-mode CSS class) and the flat scene
+// background cycles through vivid colors. The two modes are mutually
+// exclusive — turning Happy on auto-disables plain ANTI LAG, and vice versa.
+let _happyOn=false, _happyBgT=0;
+function setHappy(on){
+  if(on===_happyOn) return;
+  _happyOn=on;
+  document.body.classList.toggle('happy-mode', on);
+  if(on){
+    // Turn OFF plain anti-lag if it's on (happy takes over the strip itself).
+    if(_antiLagOn){
+      _antiLagOn=false;            // pretend it's off so setAntiLag re-runs on
+      const cb=document.getElementById('antiLagCheck'); if(cb) cb.checked=false;
+    }
+    setAntiLag(true);              // perf strip: textures/bloom/shadows off
+    // Vivid animated flat background (sky dome is hidden by anti-lag strip).
+    if(scene.background) _antiLagMeta._happySavedBg = _antiLagMeta.bg;
+  } else {
+    setAntiLag(false);             // restore textures/bloom
+  }
+}
+// Drive the rainbow background color while happy mode is on. Cheap: just
+// mutates scene.background each frame, no extra draw passes.
+function _happyTick(dt){
+  if(!_happyOn) return;
+  _happyBgT += dt*0.6;             // ~6s full cycle, matches the CSS animation
+  const h=(_happyBgT%1)*360;
+  // HSV(0..1) -> RGB at full saturation/value
+  const c=new THREE.Color(); c.setHSL(h/360, 1.0, 0.55);
+  if(scene.background && scene.background.isColor) scene.background.copy(c);
+}
 // New enemies/zombies spawned while ANTI LAG is on must be stripped too —
 // hook the strip into makeGuineaPig/makeZombie via a lightweight post-add.
 
@@ -4522,16 +4728,37 @@ moveStick.addEventListener('touchstart',e=>{e.preventDefault();const t=e.changed
 moveStick.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches){if(t.identifier===stickId){const dx=t.clientX-stickStart.x,dy=t.clientY-stickStart.y,max=44,d=Math.hypot(dx,dy),k=d>max?max/d:1;moveVec.x=(dx*k)/max;moveVec.y=(dy*k)/max;moveNub.style.transform='translate('+dx*k+'px,'+dy*k+'px)';}}},{passive:false});
 const endStick=e=>{for(const t of e.changedTouches){if(t.identifier===stickId){stickId=null;moveVec.x=0;moveVec.y=0;moveNub.style.transform='translate(0,0)';}}};
 moveStick.addEventListener('touchend',endStick);moveStick.addEventListener('touchcancel',endStick);
-let lookId=null, lookLast={x:0,y:0};
-lookPad.addEventListener('touchstart',e=>{e.preventDefault();if(lookId===null){const t=e.changedTouches[0];lookId=t.identifier;lookLast={x:t.clientX,y:t.clientY};isMobileLook=true;}},{passive:false});
-lookPad.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches){if(t.identifier===lookId){const dx=t.clientX-lookLast.x,dy=t.clientY-lookLast.y;lookLast={x:t.clientX,y:t.clientY};INPUT.mx+=dx;INPUT.my+=dy;}}},{passive:false});
-const endLook=e=>{for(const t of e.changedTouches){if(t.identifier===lookId){lookId=null;isMobileLook=false;}}};
+let lookId=null, lookLast={x:0,y:0}, lookMoved=false, lookStartT=0;
+// lookPad = big transparent fire+look zone (mockup layout):
+//   • a quick tap (no real movement) fires the weapon
+//   • a drag looks around AND keeps firing at the same time
+lookPad.addEventListener('touchstart',e=>{e.preventDefault();if(lookId===null){
+  const t=e.changedTouches[0]; lookId=t.identifier; lookLast={x:t.clientX,y:t.clientY};
+  lookMoved=false; lookStartT=performance.now(); isMobileLook=true;
+  INPUT.firing=true;   // hold fire from the moment the thumb lands — tap or drag
+}},{passive:false});
+lookPad.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches){
+  if(t.identifier===lookId){
+    const dx=t.clientX-lookLast.x, dy=t.clientY-lookLast.y;
+    if(Math.abs(dx)+Math.abs(dy)>3) lookMoved=true;   // past the dead-zone → it's a drag
+    lookLast={x:t.clientX,y:t.clientY}; INPUT.mx+=dx; INPUT.my+=dy;
+  }
+}},{passive:false});
+const endLook=e=>{for(const t of e.changedTouches){
+  if(t.identifier===lookId){
+    lookId=null; isMobileLook=false;
+    INPUT.firing=false;   // thumb lifted → stop firing (both tap and drag)
+  }
+}};
 lookPad.addEventListener('touchend',endLook);lookPad.addEventListener('touchcancel',endLook);
-fireBtn.addEventListener('touchstart',e=>{e.preventDefault();INPUT.firing=true;},{passive:false});
-fireBtn.addEventListener('touchend',e=>{e.preventDefault();INPUT.firing=false;},{passive:false});
+// (old separate FIRE button is hidden — the look zone now handles all firing)
 reloadBtn.addEventListener('click',()=>tryReload());
 scopeBtn.addEventListener('touchstart',e=>{e.preventDefault(); INPUT.aiming=!INPUT.aiming;},{passive:false});
-document.getElementById('switchBtn').addEventListener('touchstart',e=>{e.preventDefault();
+// Weapon swap (⇄) button has been removed from the layout — the bottom 1/2/3
+// slot buttons handle weapon selection directly now. Guard against the missing
+// element so this script doesn't crash on load.
+const _switchBtn=document.getElementById('switchBtn');
+if(_switchBtn){ _switchBtn.addEventListener('touchstart',e=>{e.preventDefault();
   // Commander (lamadrid) has 3 slots: cycle 1→2→3→1.
   // RPG operator toggles RPG(3)↔knife(2). Everyone else gun(1)↔knife(2).
   if(ACCOUNT.allslots){
@@ -4541,7 +4768,7 @@ document.getElementById('switchBtn').addEventListener('touchstart',e=>{e.prevent
     const primary = ACCOUNT.rpg ? 3 : 1;
     switchWeapon(STATE.weaponSlot===primary ? 2 : primary);
   }
-},{passive:false});
+},{passive:false}); }
 document.getElementById('zombieBtn').addEventListener('touchstart',e=>{e.preventDefault(); summonZombies();},{passive:false});
 // Jump button — pulses the space key the same way the keyboard handler does.
 const jumpBtn=document.getElementById('jumpBtn');
@@ -4692,6 +4919,14 @@ document.getElementById('startBtn').addEventListener('click',startGame);
 document.getElementById('resumeBtn').addEventListener('click',()=>togglePause());
 // ANTI LAG toggle (pause screen) — strip/restore textures + bloom + sky.
 document.getElementById('antiLagCheck').addEventListener('change',e=>{
+  // Turning plain ANTI LAG on disables HAPPY (both reuse the same strip; can't
+  // run both). Turning it off leaves happy alone (toggle happy separately).
+  if(e.target.checked && _happyOn){
+    const hb=document.getElementById('happyCheck'); if(hb) hb.checked=false;
+    _happyOn=false; document.body.classList.remove('happy-mode');
+    // _antiLagOn is currently false (happy owned the strip); let setAntiLag
+    // run its "on" branch cleanly below.
+  }
   setAntiLag(e.target.checked);
   try{ localStorage.setItem('tfog_antiLag', e.target.checked?'1':'0'); }catch(_){}
 });
@@ -4707,8 +4942,97 @@ document.getElementById('antiLagCheck').addEventListener('change',e=>{
     setAntiLag(true);
   }
 })();
+// HAPPY toggle (pause screen) — rainbow anti-lag. Reuses the texture/bloom
+// strip and layers a cycling hue-rotate filter on the canvas. Mutually
+// exclusive with plain ANTI LAG: turning one on flips the other off.
+document.getElementById('happyCheck').addEventListener('change',e=>{
+  setHappy(e.target.checked);
+  try{ localStorage.setItem('tfog_happy', e.target.checked?'1':'0'); }catch(_){}
+});
+// Restore the saved HAPPY preference on load (survives reloads), same pattern.
+(function(){
+  let saved=null;
+  try{ saved = localStorage.getItem('tfog_happy'); }catch(_){}
+  if(saved==='1'){
+    const cb=document.getElementById('happyCheck');
+    cb.checked=true;
+    setHappy(true);
+  }
+})();
 // Mobile pause button — opens the same pause overlay.
 document.getElementById('pauseBtn').addEventListener('touchstart',e=>{e.preventDefault(); if(!STATE.paused) togglePause();},{passive:false});
+
+// ===== Field Command console (level-select) — secret perk for lamadrid.hail@ess.edu.ph =====
+// Preset wave-jumps shown in a 3-col grid: "+1 / +2 / +5 / +10 / +25 / +50".
+// A custom jump field lets the operator jump to any exact wave (1–999).
+// jumpToWave(n) clears the live field (enemies, zombies, mech, projectiles) then
+// starts wave n, so a mid-fight jump never leaves stragglers from the old wave.
+const LVL_PRESETS = [1, 2, 5, 10, 25, 50];
+function jumpToWave(n){
+  if(!STATE.playing || STATE.over) return;
+  n = Math.max(1, Math.min(999, Math.floor(n)||1));
+  // tear down the current battle so nothing carries over into the new wave
+  for(const e of enemies){ scene.remove(e.mesh); disposeMesh(e.mesh); } enemies.length=0;
+  if(STATE.mech){ scene.remove(STATE.mech.mesh); disposeMesh(STATE.mech.mesh); STATE.mech=null; }
+  killAllZombies();
+  for(const r of rockets){ scene.remove(r.mesh); disposeMesh(r.mesh); for(const p of r.trail){ scene.remove(p.mesh); p.mesh.geometry.dispose(); p.mesh.material.dispose(); } } rockets.length=0;
+  for(const p of projectiles){ scene.remove(p.mesh); disposeMesh(p.mesh); } projectiles.length=0;
+  STATE.enemiesToSpawn=[];
+  closeLvlPanel();
+  if(STATE.paused) togglePause();   // resume so the new wave actually runs
+  startWave(n);
+  flashBanner('Wave jump → '+n);
+}
+function refreshLvlCurrent(){
+  const cur = STATE.wave||1;
+  const a=document.getElementById('lvlCurrentWave');
+  const b=document.getElementById('lvlCurrentWavePause');
+  if(a) a.textContent=cur;
+  if(b) b.textContent=cur;
+  const num=document.getElementById('lvlSelectBtnNum');
+  if(num) num.textContent=cur;
+}
+function buildLvlGrid(containerId, presetGetter){
+  const g=document.getElementById(containerId); if(!g) return;
+  g.innerHTML='';
+  for(const p of LVL_PRESETS){
+    const b=document.createElement('button');
+    b.textContent='+'+p;
+    b.addEventListener('click',()=>{ jumpToWave((STATE.wave||0)+p); });
+    g.appendChild(b);
+  }
+}
+function openLvlPanel(){ document.getElementById('lvlSelectPanel').classList.add('show'); refreshLvlCurrent(); }
+function closeLvlPanel(){ document.getElementById('lvlSelectPanel').classList.remove('show'); }
+(function initLvlSelect(){
+  buildLvlGrid('lvlGrid');
+  buildLvlGrid('lvlGridPause');
+  const btn=document.getElementById('lvlSelectBtn');
+  btn.addEventListener('touchstart',e=>{e.preventDefault(); if(!ACCOUNT.levelSelect) return;
+    const p=document.getElementById('lvlSelectPanel');
+    if(p.classList.contains('show')) closeLvlPanel(); else openLvlPanel();
+  },{passive:false});
+  btn.addEventListener('click',()=>{ if(!ACCOUNT.levelSelect) return;
+    const p=document.getElementById('lvlSelectPanel');
+    if(p.classList.contains('show')) closeLvlPanel(); else openLvlPanel();
+  });
+  document.getElementById('lvlCloseX').addEventListener('click',closeLvlPanel);
+  document.getElementById('lvlCloseX').addEventListener('touchstart',e=>{e.preventDefault(); closeLvlPanel();},{passive:false});
+  document.getElementById('lvlGoBtn').addEventListener('click',()=>{
+    const v=parseInt(document.getElementById('lvlCustomInput').value,10);
+    if(v>0) jumpToWave(v);
+  });
+  document.getElementById('lvlGoBtnPause').addEventListener('click',()=>{
+    const v=parseInt(document.getElementById('lvlCustomInputPause').value,10);
+    if(v>0) jumpToWave(v);
+  });
+  // Enter key on either custom field triggers the jump.
+  document.getElementById('lvlCustomInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('lvlGoBtn').click(); } });
+  document.getElementById('lvlCustomInputPause').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('lvlGoBtnPause').click(); } });
+  // Keep the current-wave readouts fresh whenever a wave starts.
+  const _origStartWave=startWave;
+  startWave=function(n){ _origStartWave(n); refreshLvlCurrent(); };
+})();
 // Shop: active tab + render-on-switch + purchase handling
 let SHOP_TAB='upgrades';
 document.querySelectorAll('.shop-tab').forEach(tab=>{
@@ -5109,6 +5433,7 @@ const clock=new THREE.Clock();
 function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(0.05, clock.getDelta());
+  _happyTick(dt);   // cycle the rainbow background while HAPPY mode is on
   // Adaptive perf: track a rolling frame-time. If we sustain <45fps for ~2s,
   // drop the pixel ratio to 1.0 to claw back fill rate (the cheapest big win).
   PERF.smooth = PERF.smooth*0.92 + dt*0.08;
